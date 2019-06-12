@@ -9,9 +9,6 @@ public class MainConsumer {
         kafkaConsumerCreator.getKafkaConsumer().wakeup();
         System.out.println("Stopping consumer .....");
 
-
-
-
 }
 
 }

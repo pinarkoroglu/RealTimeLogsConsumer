@@ -5,7 +5,7 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.MongoClient;
-import com.mongodb.MongoException;
+
 public  class DatabaseActions {
 
     public static void actionsOfDatabase(String timeStamp,String logLevel,String logServer,String logDetail) {
@@ -30,7 +30,7 @@ public  class DatabaseActions {
         DBCursor cursorObj = collectionObj.find();
         try {
             while (cursorObj.hasNext()) {
-                //System.out.println(cursorObj.next());
+                System.out.println(cursorObj.next());
             }
         } finally {
             cursorObj.close();

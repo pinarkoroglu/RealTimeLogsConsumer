@@ -1,17 +1,12 @@
-import java.util.Collections;
-import java.util.Properties;
+import java.util.*;
+
+
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.errors.WakeupException;
 import org.apache.kafka.common.serialization.LongDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
-import javax.xml.crypto.Data;
-
-
-//PUSH TO DATABASE AND SEARCH HOW TO SHOW ON DASHBOARD!!!
-//CONSUMER HAVE TO SPLIT LOGS AND CHANGE JSON
-
-    public class KafkaConsumerCreator implements Runnable {
+public class KafkaConsumerCreator implements Runnable {
         DatabaseActions databaseActions;
         /*kafka consumer creator */
         public static Consumer<String, String> createConsumer() {
@@ -27,7 +22,7 @@ import javax.xml.crypto.Data;
             consumer.subscribe(Collections.singletonList(IKafkaConstants.TOPIC_NAME));
             return consumer;
         }
-        public SplitMessages splitMessages;
+
         @Override
         public void run() {
             Consumer<String, String> consumer = createConsumer();
@@ -35,22 +30,7 @@ import javax.xml.crypto.Data;
             try{
                 while (true) {
                     ConsumerRecords<String, String> consumerRecords = consumer.poll(1000);
-                    // 1000 is the time in milliseconds consumer will wait if no record is found at broker.
-                    /*
-            if (consumerRecords.count() == 0)
-                noMessageFound++;
-                if (noMessageFound > IKafkaConstants.MAX_NO_MESSAGE_FOUND_COUNT)
-                    // If no message found count is reached to threshold exit loop.
-                    break;
-                else
-                    continue;
-                */
                     for (ConsumerRecord<String, String> record : consumerRecords){
-                        // print the offset,key and value for the consumer records.
-                       // System.out.printf("offset = %d, key = %s, value = %s\n",
-                          //      record.offset(), record.key(), record.value());
-                       // splitMessages.logMessagesSplit(record.value());
-
                         String[] logs= record.value().split(" ");
                         DatabaseActions.actionsOfDatabase(logs[0]+" "+logs[1],logs[2],logs[3],logs[4]);
                     }
@@ -69,6 +49,7 @@ import javax.xml.crypto.Data;
         public Consumer<String,String> getKafkaConsumer(){
             return createConsumer();
         }
+
         public KafkaConsumerCreator(){
 
         }
