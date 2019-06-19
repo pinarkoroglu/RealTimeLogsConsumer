@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Home</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <head>
+        <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.0.min.js"></script>
+    </head>
+
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
+    <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+    <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            var istanbulLogsCount = 0;
+            var moscowLogsCount = 0;
+            var londonLogsCount = 0;
+            var tokyoLogsCount = 0;
+            var beijingLogsCount = 0;
+            var stompClient;
+
+            /* Chart Configuration */
+            var config = {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Istanbul',
+                        backgroudColor: 'rgb(242, 13, 13)',
+                        borderColor: 'rgb(242, 13, 13)',
+                        data: [],
+                        fill: false
+                    }, {
+                        label: 'Tokyo',
+                        backgroudColor: 'rgb(255, 153, 153)',
+                        borderColor: 'rgb(255, 153, 153)',
+                        data: [],
+                        fill: false
+                    }, {
+                        label: 'Moscow',
+                        backgroudColor: 'rgb(0, 128, 255)',
+                        borderColor: 'rgb(0, 128, 255)',
+                        data: [],
+                        fill: false
+                    }, {
+                        label: 'London',
+                        backgroudColor: 'rgb(128, 0, 255)',
+                        borderColor: 'rgb(128, 0, 255)',
+                        data: [],
+                        fill: false
+                    }, {
+                        label: 'Beijing',
+                        backgroudColor: 'rgb(255, 191, 0)',
+                        borderColor: 'rgb(255, 191, 0)',
+                        data: [],
+                        fill: false
+                    }
+                    ]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Cities'
+                    }
+                }
+            };
+            /* Document Ready Event */
+            $(document).ready(function () {
+                var ctx = document.getElementById('line-chart');
+                window.myLine = new Chart(ctx, config);
+                /* Configuring WebSocket on Client Side */
+                var socket = new SockJS('/real-time');
+                stompClient = Stomp.over(socket);
+                stompClient.connect({}, function (frame) {
+                    stompClient.subscribe('/topic/logs', function (logs) {
+                        var res = logs.body.split(" ");
+
+                        var city = res[3];
+
+                        if (city == "Istanbul")
+                            istanbulLogsCount = istanbulLogsCount + 1;
+                        if (city == "Tokyo")
+                            tokyoLogsCount = tokyoLogsCount + 1;
+                        if (city == "London")
+                            londonLogsCount = londonLogsCount + 1;
+                        if (city == "Beijing")
+                            beijingLogsCount = beijingLogsCount + 1;
+                        if (city == "Moscow")
+                            moscowLogsCount = moscowLogsCount + 1;
+
+
+
+                    });
+                });
+                setInterval(function () {
+                    update(config)
+                }, 1000);
+            });
+
+
+            function update(config) {
+                config.data.labels.push(new Date());
+                config.data.datasets.forEach(function (dataset) {
+
+                    if (dataset.label == "Istanbul") {
+                        dataset.data.push(istanbulLogsCount);
+
+                    } else if (dataset.label == "Tokyo") {
+                        dataset.data.push(tokyoLogsCount);
+
+                    } else if (dataset.label == "London") {
+                        dataset.data.push(londonLogsCount);
+
+                    } else if (dataset.label == "Beijing") {
+                        dataset.data.push(beijingLogsCount);
+
+                    } else if (dataset.label == "Moscow") {
+                        dataset.data.push(moscowLogsCount);
+
+                    }
+                });
+                window.myLine.update();
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="alert alert-danger" role="alert" style="width:300px;margin-left:40%;margin-top:10px;">
+    <p class="text-center">Real Time Logs</p>
+</div>
+<div class="model">
+    <div class="modal-dialog" style="width:80%;height:auto">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Turkish Economy Bank</h5>
+            </div>
+            <div class="model-body">
+                <div class="container" style="width:80%">
+                    <canvas id="line-chart" width="800" height="600"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,2 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module type="JAVA_MODULE" version="4" />
+<module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="Spring" name="Spring">
+      <configuration>
+        <fileset id="fileset" name="Spring Application Context" removed="false" profiles="cloud">
+          <file>file://$MODULE_DIR$/src/main/java/MainConsumer.java</file>
+          <file>file://$MODULE_DIR$/src/main/java/WebConfig/WebSocketConfig.java</file>
+        </fileset>
+        <fileset id="spring_boot_MainConsumer" profiles="cloud" autodetected="true" />
+      </configuration>
+    </facet>
+  </component>
+</module>
